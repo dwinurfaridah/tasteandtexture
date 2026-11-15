@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Taste and Texture Food</title>
+<style>
+:root{--bg1:#fff3c4;--bg2:#ffd6e7;--card:#ffffff;--text:#3a2a1a;--accent:#ff7a3d;--accent2:#7c4dff;--ok:#2ea44f;--bad:#e5484d;--shadow:rgba(120,60,0,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2b2140;--bg2:#40213a;--card:#3a2e52;--text:#fff4e0;--shadow:rgba(0,0,0,.4)}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS",sans-serif;color:var(--text);background:linear-gradient(135deg,var(--bg1),var(--bg2));overflow:hidden}
+.float{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.float span{position:absolute;bottom:-60px;font-size:32px;opacity:.35;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-120vh) rotate(360deg)}}
+.slide{position:absolute;inset:0;padding:16px 16px 90px;display:none;flex-direction:column;align-items:center;overflow-y:auto;text-align:center}
+.slide.active{display:flex;animation:pop .5s ease}
+@keyframes pop{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+h1,h2{margin:8px 0}
+h1{font-size:clamp(30px,7vw,60px);color:var(--accent);text-shadow:3px 3px 0 rgba(255,255,255,.5)}
+h2{font-size:clamp(24px,5vw,38px);color:var(--accent2)}
+.card{background:var(--card);border-radius:24px;padding:18px 22px;box-shadow:0 8px 0 var(--shadow);max-width:760px;width:100%;margin:8px 0;font-size:clamp(16px,2.6vw,21px);line-height:1.5}
+.card small{opacity:.7;display:block}
+.hero{font-size:clamp(80px,22vw,150px);animation:bounce 1.6s ease-in-out infinite;margin-top:4vh}
+@keyframes bounce{50%{transform:translateY(-22px) rotate(6deg)}}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:48px}
+.row span{animation:wiggle 2s ease-in-out infinite}
+.row span:nth-child(2){animation-delay:.3s}.row span:nth-child(3){animation-delay:.6s}.row span:nth-child(4){animation-delay:.9s}.row span:nth-child(5){animation-delay:1.2s}
+@keyframes wiggle{50%{transform:rotate(-14deg) scale(1.2)}}
+.btn{border:0;border-radius:999px;padding:12px 26px;font:inherit;font-size:20px;font-weight:bold;color:#fff;background:var(--accent);box-shadow:0 5px 0 rgba(0,0,0,.25);cursor:pointer;transition:transform .15s}
+.btn:hover{transform:scale(1.08)}.btn:active{transform:translateY(4px);box-shadow:none}
+.btn.start{font-size:26px;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{transform:scale(1.1)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;max-width:820px;width:100%;margin:6px 0}
+.flip{perspective:700px;height:160px;cursor:pointer}
+.flip>div{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on>div{transform:rotateY(180deg)}
+.flip b,.flip i{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;box-shadow:0 5px 0 var(--shadow);font-style:normal}
+.flip b{background:var(--card);font-size:19px}.flip b em{font-size:48px;font-style:normal}
+.flip i{transform:rotateY(180deg);background:var(--accent2);color:#fff;font-size:15px}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{border:3px solid var(--accent2);background:var(--card);color:var(--text);border-radius:16px;padding:12px;font:inherit;font-size:18px;cursor:pointer;transition:.2s}
+.opt:hover{transform:scale(1.03)}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok);animation:pulse .5s}
+.opt.bad{background:var(--bad);color:#fff;border-color:var(--bad);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.bar{height:14px;background:rgba(0,0,0,.15);border-radius:99px;overflow:hidden;margin-bottom:10px}
+.bar div{height:100%;background:linear-gradient(90deg,#ffb300,#ff5e5e);transition:width .4s}
+.stars{font-size:46px}
+.big{font-size:64px;animation:bounce 1.6s infinite}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:center;gap:12px;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+nav .dots{display:flex;gap:6px}
+nav .dots i{width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,.25)}
+nav .dots i.on{background:var(--accent);transform:scale(1.4)}
+.btn.sm{padding:8px 18px;font-size:18px;background:var(--accent2)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.snd{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:6;width:48px;height:48px;padding:0;font-size:24px;background:var(--accent)}
+.fs{right:68px}
+.conf{position:fixed;top:-30px;font-size:28px;pointer-events:none;animation:fall 2s linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+ul{text-align:left;margin:4px 0;padding-left:22px}
+li{margin:6px 0}
+.say{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="float" id="fl"></div>
+<button class="btn snd" id="snd" onclick="toggleSound()" aria-label="Sound on or off">🔊</button>
+<button class="btn snd fs" id="fs" onclick="toggleFS()" aria-label="Fullscreen on or off" title="Fullscreen (F)">📺</button>
+
+<section class="slide active" id="s0">
+  <div class="hero">🍎</div>
+  <div class="row"><span>🍋</span><span>🍪</span><span>🍫</span><span>🥕</span><span>🍦</span></div>
+  <h1>Taste and Texture Food</h1>
+  <h2>English for Grade 4</h2>
+  <p class="card" style="max-width:440px">🏫 Let’s learn about food words!</p>
+  <button class="btn start" onclick="go(1)">▶ Let’s Start!</button>
+</section>
+
+<section class="slide" id="s1">
+  <h2>📖 What are Taste and Texture?</h2>
+  <div class="card say" onclick="speak(this.innerText)">
+    <div style="font-size:54px">👅</div>
+    <p><b>Taste</b> is how food feels on your <b>tongue</b>. It can be sweet, sour, salty, bitter, or savory.</p>
+    <small>Taste = rasa makanan di lidah</small>
+  </div>
+  <div class="card say" onclick="speak(this.innerText)">
+    <div style="font-size:54px">🦷</div>
+    <p><b>Texture</b> is how food feels when you touch it and chew it. It can be crunchy, soft, chewy, or hard.</p>
+    <small>Texture = tekstur makanan saat disentuh dan dikunyah</small>
+  </div>
+  <div class="card">Example: “This candy tastes <b>sweet</b>. This chip is <b>crunchy</b>.” 😋</div>
+  <p>👆 Tap a card to hear it!</p>
+</section>
+
+<section class="slide" id="s2">
+  <h2>🍽️ Examples of Taste</h2>
+  <p style="margin:0">Tap a card to flip it and hear the word!</p>
+  <div class="grid" id="g1"></div>
+  <h2>🥨 Examples of Texture</h2>
+  <div class="grid" id="g2"></div>
+</section>
+
+<section class="slide" id="s3">
+  <h2>🎮 Quiz Time!</h2>
+  <div class="card" id="quiz"></div>
+</section>
+
+<section class="slide" id="s4">
+  <h2>⭐ Conclusion</h2>
+  <div class="card">
+    <ul>
+      <li>👅 <b>Taste</b> is how food feels on our tongue.</li>
+      <li>🍬🍋🧂☕🍜 Tastes: sweet, sour, salty, bitter, savory.</li>
+      <li>🦷 <b>Texture</b> is how food feels when we touch and chew it.</li>
+      <li>🍪🍞🍮🥕🥤 Textures: crunchy, soft, chewy, hard, liquid.</li>
+      <li>🥗 Try healthy food with many tastes and textures!</li>
+    </ul>
+  </div>
+  <div class="row"><span>🍓</span><span>🥦</span><span>🍞</span><span>🥛</span><span>🍌</span></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="hero">🎉</div>
+  <h1>Thank You!</h1>
+  <h2>Keep learning and eat healthy! 🥗🍎</h2>
+  <div class="row"><span>😊</span><span>👏</span><span>🌟</span><span>👏</span><span>😊</span></div>
+  <button class="btn" onclick="go(0)">🔁 Back to Start</button>
+</section>
+
+<nav>
+  <button class="btn sm" id="prev" onclick="go(cur-1)">◀ Back</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn sm" id="next" onclick="go(cur+1)">Next ▶</button>
+</nav>
+
+<script>
+var cur=0,N=6,soundOn=true,AC=null;
+/* ---------- Sound ---------- */
+function ctx(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function tone(f,d,t,delay,vol){
+  if(!soundOn)return;var c=ctx();if(!c)return;
+  var o=c.createOscillator(),g=c.createGain(),s=c.currentTime+(delay||0);
+  o.type=t||'sine';o.frequency.value=f;
+  g.gain.setValueAtTime(vol||.2,s);g.gain.exponentialRampToValueAtTime(.001,s+d);
+  o.connect(g);g.connect(c.destination);o.start(s);o.stop(s+d);
+}
+function sfx(n){
+  if(n==='click')tone(660,.08,'square',0,.08);
+  if(n==='flip'){tone(500,.1,'triangle');tone(750,.12,'triangle',.08)}
+  if(n==='ok'){[523,659,784,1047].forEach(function(f,i){tone(f,.18,'triangle',i*.09)})}
+  if(n==='bad'){tone(220,.25,'sawtooth',0,.12);tone(165,.35,'sawtooth',.18,.12)}
+  if(n==='win'){[523,659,784,659,784,1047,1319].forEach(function(f,i){tone(f,.22,'triangle',i*.11)})}
+  if(n==='page')tone(440,.1,'sine',0,.12);
+}
+function speak(t){
+  if(!soundOn||!window.speechSynthesis)return;
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t.replace(/[^\x00-\x7F’“”]/g,' '));u.lang='en-US';u.rate=.8;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}
+}
+function toggleSound(){
+  soundOn=!soundOn;document.getElementById('snd').textContent=soundOn?'🔊':'🔇';
+  if(!soundOn&&window.speechSynthesis)speechSynthesis.cancel();else sfx('click');
+}
+
+/* ---------- Fullscreen ---------- */
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement||null}
+function fsOK(){var d=document.documentElement;return !!(d.requestFullscreen||d.webkitRequestFullscreen)}
+function canFS(){return !!(document.fullscreenEnabled||document.webkitFullscreenEnabled)}
+function openTab(){
+  try{
+    var h='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    var u=URL.createObjectURL(new Blob([h],{type:'text/html'}));
+    var w=window.open(u,'_blank');
+    if(!w)alert('Pop-up diblokir. Izinkan pop-up untuk membuka layar penuh.');
+  }catch(e){}
+}
+function toggleFS(){
+  sfx('click');
+  try{
+    if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+    if(!canFS()){openTab();return}
+    var d=document.documentElement,r=(d.requestFullscreen||d.webkitRequestFullscreen).call(d);
+    if(r&&r.catch)r.catch(openTab);
+  }catch(e){openTab()}
+}
+function fsUpdate(){var b=document.getElementById('fs');b.textContent=fsEl()?'❌':'📺';b.title=fsEl()?'Exit fullscreen (F)':'Fullscreen (F)'}
+document.addEventListener('fullscreenchange',fsUpdate);
+document.addEventListener('webkitfullscreenchange',fsUpdate);
+if(!fsOK())document.getElementById('fs').style.display='none';
+if(fsOK()&&!canFS())document.getElementById('fs').title='Buka di tab baru (layar penuh)';
+
+/* ---------- Cards ---------- */
+var tastes=[["🍬","Sweet","Sugar, candy, ice cream"],["🍋","Sour","Lemon, lime, green mango"],["🧂","Salty","Salt, chips, salted fish"],["☕","Bitter","Black coffee, bitter melon"],["🍜","Savory","Soup, meatballs, satay"]];
+var texts=[["🍪","Crunchy","Makes a crunch sound: chips, crackers"],["🍞","Soft","Easy to chew: bread, cake"],["🍮","Chewy","A bit stretchy: jelly, gum, noodles"],["🥕","Hard","Needs strong chewing: raw carrot, nuts"],["🥤","Liquid","Flows in your mouth: milk, juice"]];
+function cards(id,arr){
+  document.getElementById(id).innerHTML=arr.map(function(a,i){
+    return '<div class="flip" data-w="'+a[1]+'" data-d="'+a[2]+'"><div><b><em>'+a[0]+'</em>'+a[1]+'</b><i>'+a[2]+'</i></div></div>';
+  }).join('');
+}
+cards('g1',tastes);cards('g2',texts);
+document.addEventListener('click',function(e){
+  var f=e.target.closest('.flip');if(!f)return;
+  f.classList.toggle('on');sfx('flip');
+  speak(f.classList.contains('on')?f.dataset.w+'. '+f.dataset.d:f.dataset.w);
+});
+
+/* ---------- Navigation ---------- */
+var dots=document.getElementById('dots');
+dots.innerHTML='';for(var i=0;i<N;i++)dots.innerHTML+='<i></i>';
+function go(n){
+  if(n<0||n>=N)return;cur=n;sfx('page');
+  if(window.speechSynthesis)speechSynthesis.cancel();
+  document.querySelectorAll('.slide').forEach(function(s,i){s.classList.toggle('active',i===n);if(i===n)s.scrollTop=0});
+  document.querySelectorAll('#dots i').forEach(function(d,i){d.classList.toggle('on',i===n)});
+  document.getElementById('prev').disabled=n===0;
+  document.getElementById('next').disabled=n===N-1;
+  if(n===3)startQuiz();
+  if(n===5){confetti(30);sfx('win')}
+}
+function confetti(k){
+  var e=['🎉','⭐','🎈','✨','🍭'];
+  for(var i=0;i<k;i++){var c=document.createElement('div');c.className='conf';c.textContent=e[i%5];c.style.left=Math.random()*100+'vw';c.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(c);setTimeout(function(x){x.remove()},3200,c)}
+}
+
+/* ---------- Quiz (12 questions, shuffled) ---------- */
+var BANK=[
+["🍬","Sugar tastes ____.",["sweet","bitter","sour"],0],
+["🍪","A cracker is ____ when you bite it.",["soft","crunchy","liquid"],1],
+["🍋","A lemon tastes ____.",["salty","sweet","sour"],2],
+["🍮","Jelly is ____ when you chew it.",["chewy","crunchy","hard"],0],
+["👅","We use our ____ to taste food.",["hands","tongue","eyes"],1],
+["☕","Black coffee without sugar tastes ____.",["bitter","sweet","salty"],0],
+["🧂","Salt makes food taste ____.",["sour","sweet","salty"],2],
+["🍞","Fresh bread is ____.",["hard","soft","bitter"],1],
+["🥕","A raw carrot is ____ to chew.",["hard","liquid","soft"],0],
+["🥛","Milk is a ____.",["liquid","crunchy","chewy"],0],
+["❓","What is texture?",["The color of food","How food feels when we chew it","The price of food"],1],
+["🍟","Which word describes chips?",["crunchy","bitter","liquid"],0]
+];
+var Q,qi,score,locked;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function startQuiz(){
+  Q=shuffle(BANK).map(function(q){
+    var correct=q[2][q[3]],opts=shuffle(q[2]);
+    return [q[0],q[1],opts,opts.indexOf(correct)];
+  });
+  qi=0;score=0;showQ();
+}
+function showQ(){
+  locked=false;var q=Q[qi],box=document.getElementById('quiz');
+  box.innerHTML='<div class="bar"><div style="width:'+(qi/Q.length*100)+'%"></div></div><div>Question '+(qi+1)+' of '+Q.length+' &nbsp; ⭐ Score: '+score+'</div><div class="big">'+q[0]+'</div><h3 style="font-size:1.3em;margin:6px 0">'+q[1]+'</h3><button class="btn sm" onclick="speak(Q[qi][1].replace(\'____\',\'blank\'))">🔊 Listen</button><div class="opts">'+q[2].map(function(o,i){return '<button class="opt" onclick="ans(this,'+i+')">'+['A','B','C'][i]+'. '+o+'</button>'}).join('')+'</div>';
+  speak(q[1].replace('____','blank'));
+}
+function ans(b,i){
+  if(locked)return;locked=true;var q=Q[qi],bs=document.querySelectorAll('.opt');
+  if(i===q[3]){b.classList.add('ok');score++;confetti(10);sfx('ok');setTimeout(function(){speak('Great job!')},500)}
+  else{b.classList.add('bad');bs[q[3]].classList.add('ok');sfx('bad');setTimeout(function(){speak('Try again next time!')},500)}
+  setTimeout(function(){qi++;qi<Q.length?showQ():result()},1900);
+}
+function result(){
+  var p=score/Q.length,st=p>=.8?3:p>=.5?2:1;
+  var msg=p>=.8?'Excellent! You are a food expert! 🏆':p>=.5?'Good job! Keep learning 👍':'Nice try! Let’s play again! 💪';
+  document.getElementById('quiz').innerHTML='<div class="bar"><div style="width:100%"></div></div><div class="stars">'+'⭐'.repeat(st)+'☆'.repeat(3-st)+'</div><h3>Your score: '+score+' / '+Q.length+'</h3><p>'+msg+'</p><button class="btn" onclick="startQuiz()">🔁 Play Again</button>';
+  if(p>=.5){confetti(25);sfx('win')}else sfx('bad');
+  speak(msg);
+}
+
+/* ---------- Background ---------- */
+(function(){var f=document.getElementById('fl'),e=['🍎','🍪','🍋','🍫','🥕','🍦','🍓','🍞'];f.innerHTML='';for(var i=0;i<14;i++){var s=document.createElement('span');s.textContent=e[i%8];s.style.left=(i*7.5)+'%';s.style.animationDuration=(10+Math.random()*10)+'s';s.style.animationDelay=(-Math.random()*15)+'s';f.appendChild(s)}})();
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);if((e.key==='f'||e.key==='F')&&fsOK())toggleFS()});
+go(0);
+</script>
+</body>
+</html>
